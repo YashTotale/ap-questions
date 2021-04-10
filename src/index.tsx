@@ -1,10 +1,15 @@
 //React Imports
 import React from "react";
 import ReactDOM from "react-dom";
+import { HashRouter as Router } from "react-router-dom";
 import App from "./App";
+import { SnackbarProvider } from "notistack";
 
 // Redux Imports
 import ReduxStore from "./Store";
+
+//Material UI Imports
+import Theme from "./Theme";
 
 // Misc Imports
 import reportWebVitals from "./reportWebVitals";
@@ -12,7 +17,13 @@ import reportWebVitals from "./reportWebVitals";
 ReactDOM.render(
   <React.StrictMode>
     <ReduxStore>
-      <App />
+      <Router>
+        <Theme>
+          <SnackbarProvider>
+            <App />
+          </SnackbarProvider>
+        </Theme>
+      </Router>
     </ReduxStore>
   </React.StrictMode>,
   document.getElementById("root")

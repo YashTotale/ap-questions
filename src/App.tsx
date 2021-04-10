@@ -1,21 +1,22 @@
 //React Imports
 import { hot } from "react-hot-loader";
 import React, { FC } from "react";
+
+// Pages
 import Home from "./Pages/Home";
 
-//Material UI Imports
-import Theme from "./Theme";
+// Components
+import Popup from "./Components/Popup";
 
 //Router Imports
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 const App: FC = () => {
   return (
-    <Router>
-      <Theme>
-        <Routes />
-      </Theme>
-    </Router>
+    <>
+      <Popup />
+      <Routes />
+    </>
   );
 };
 
