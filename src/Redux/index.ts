@@ -53,3 +53,22 @@ export {
 } from "./popup.slice";
 
 export type { PopupState } from "./popup.slice";
+
+/**
+ * Home Slice
+ */
+
+export {
+  // -> Slice
+  default as homeSlice,
+  // -> Selectors
+  getSelectedCourse,
+  // -> Actions
+  changeCourse,
+  // -> Reducer
+  homeReducer,
+  // -> State
+  initialHomeState,
+} from "./home.slice";
+
+export type { HomeState } from "./home.slice";
