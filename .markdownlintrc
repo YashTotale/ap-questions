@@ -1,0 +1,5 @@
+{
+  "no-inline-html": false,
+  "first-line-heading": false,
+  "line-length": false
+}

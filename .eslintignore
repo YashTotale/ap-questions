@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# testing
+coverage/
+
+# production
+dist/
+out/
+build/
+
+# misc
+.husky/_
