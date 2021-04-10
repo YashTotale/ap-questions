@@ -64,6 +64,7 @@ export interface Question {
   title: string;
   choices: Choice[];
   helperText: string;
+  author: string;
 }
 
 export interface Course {

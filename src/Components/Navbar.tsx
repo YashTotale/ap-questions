@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
   icons: {
+    display: "flex",
+    alignItems: "center",
     position: "absolute",
     right: "1%",
   },
@@ -91,7 +93,7 @@ const Navbar: FC = () => {
             </IconButton>
           </Tooltip>
           {!user.isLoaded ? (
-            <CircularProgress />
+            <CircularProgress className={classes.icon} />
           ) : user.isEmpty ? (
             <LoginButton dispatch={dispatch} classes={classes} />
           ) : (

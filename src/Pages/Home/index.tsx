@@ -1,22 +1,26 @@
 //React Imports
 import React, { FC } from "react";
+import { useHistory } from "react-router";
 import Filters from "./Filters";
 import Questions from "./Questions";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { getCourses, getCoursesLoading } from "../../Redux";
-
-// Firebase Imports
-import { useFirestoreConnect } from "react-redux-firebase";
+import { getUser, togglePopup } from "../../Redux";
+import { useAppDispatch } from "../../Store";
 
 //Material UI Imports
-import { CircularProgress, makeStyles, Theme } from "@material-ui/core";
+import {
+  Fab,
+  makeStyles,
+  Theme,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
+import { Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  loadingSpinner: {
-    marginTop: theme.spacing(2),
-  },
   home: {
     display: "flex",
     flexDirection: "column",
@@ -30,26 +34,48 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: "100%",
     },
   },
+  fab: {
+    position: "absolute",
+    bottom: theme.spacing(3),
+    right: theme.spacing(4),
+
+    [theme.breakpoints.down("xs")]: {
+      bottom: theme.spacing(1),
+      right: theme.spacing(1),
+    },
+  },
 }));
 
 const Home: FC = () => {
-  useFirestoreConnect({ collection: "courses" });
-
+  const dispatch = useAppDispatch();
   const classes = useStyles();
-  const coursesLoading = useSelector(getCoursesLoading);
-  const courses = useSelector(getCourses);
+  const theme = useTheme();
+  const history = useHistory();
+
+  const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
+  const user = useSelector(getUser);
 
   return (
-    <div className={classes.home}>
-      {coursesLoading || !courses ? (
-        <CircularProgress className={classes.loadingSpinner} />
-      ) : (
-        <>
-          <Filters />
-          <Questions />
-        </>
-      )}
-    </div>
+    <>
+      <div className={classes.home}>
+        <Filters />
+        <Questions />
+      </div>
+      <Tooltip title="Create a question">
+        <Fab
+          className={classes.fab}
+          color="primary"
+          size={isSmall ? "medium" : "large"}
+          onClick={() =>
+            user.isEmpty
+              ? dispatch(togglePopup({ open: true, type: "login" }))
+              : history.push("/create")
+          }
+        >
+          <Add />
+        </Fab>
+      </Tooltip>
+    </>
   );
 };
 

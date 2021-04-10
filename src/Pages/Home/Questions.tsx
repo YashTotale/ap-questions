@@ -17,6 +17,8 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import { Question as QuestionProps } from "../../Store";
 
@@ -53,7 +55,7 @@ const Questions: FC = () => {
 
   return (
     <>
-      {questions.map((q, i) => (
+      {questions.map((q) => (
         <Question key={q.title} {...q} />
       ))}
     </>
@@ -70,6 +72,10 @@ const useQuestionStyles = makeStyles((theme) => ({
   label: {
     fontSize: theme.typography.h5.fontSize,
     marginBottom: theme.spacing(1),
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: theme.typography.h6.fontSize,
+    },
   },
   button: {
     margin: theme.spacing(1, 1, 0, 0),
@@ -82,6 +88,8 @@ const Question: FC<QuestionProps> = ({
   helperText: initialHelperText,
 }) => {
   const classes = useQuestionStyles();
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [value, setValue] = React.useState("");
   const [error, setError] = React.useState(false);
@@ -101,7 +109,7 @@ const Question: FC<QuestionProps> = ({
       setHelperText("Please select an option.");
       setError(true);
     } else if (choice.isCorrect) {
-      setHelperText("You got it!");
+      setHelperText(choice.helperText);
       setError(false);
     } else {
       setHelperText(choice.helperText);
@@ -132,6 +140,7 @@ const Question: FC<QuestionProps> = ({
             variant="outlined"
             color="primary"
             className={classes.button}
+            size={isSmall ? "small" : "medium"}
           >
             Check Answer
           </Button>
