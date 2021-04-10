@@ -53,14 +53,29 @@ import { popupReducer, PopupState } from "./Redux/popup.slice";
 
 // interface Profile {}
 
-// interface StoreSchema {}
+export interface Choice {
+  title: string;
+  isCorrect: boolean;
+}
+
+export interface Question {
+  title: string;
+  choices: Choice[];
+}
+
+export interface Course {
+  title: string;
+  questions: Question[];
+}
+
+interface StoreSchema {
+  courses: Course[];
+}
+
 interface State {
   display: DisplayState;
   popup: PopupState;
-  firebase: FirebaseReducer.Reducer<
-    Record<string, unknown>,
-    Record<string, unknown>
-  >;
+  firebase: FirebaseReducer.Reducer<Record<string, unknown>, StoreSchema>;
   firestore: FirestoreReducer.Reducer;
 }
 

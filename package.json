@@ -22,6 +22,7 @@
     "react-redux": "^7.2.1",
     "react-redux-firebase": "^3.10.0",
     "react-router-dom": "^5.2.0",
+    "react-select": "^4.3.0",
     "redux-firestore": "^0.15.0",
     "redux-persist": "^6.0.0"
   },
@@ -35,6 +36,7 @@
     "@types/react-dom": "^17.0.2",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-select": "^4.0.14",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.21.0",

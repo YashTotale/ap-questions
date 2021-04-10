@@ -1,26 +1,40 @@
 //React Imports
 import React, { FC } from "react";
-import Navbar from "../Components/Navbar";
+
+// Redux Imports
+import { useSelector } from "react-redux";
+import { getCourses, getCoursesLoading } from "../Redux";
+
+// Firebase Imports
+import { useFirestoreConnect } from "react-redux-firebase";
 
 //Material UI Imports
-import { makeStyles, Theme, Typography } from "@material-ui/core";
+import { CircularProgress, makeStyles, Theme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  home: {},
+  home: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  loadingSpinner: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const Home: FC = () => {
+  useFirestoreConnect({ collection: "courses" });
+
   const classes = useStyles();
+  const coursesLoading = useSelector(getCoursesLoading);
+  const courses = useSelector(getCourses);
 
   return (
     <div className={classes.home}>
-      <Navbar />
-      <Typography variant="h1" align="center">
-        AP Questions
-      </Typography>
-      <Typography variant="h6" align="center">
-        Edit <code>src/Pages/Home.tsx</code> to view live changes!
-      </Typography>
+      {coursesLoading || !courses ? (
+        <CircularProgress className={classes.loadingSpinner} />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

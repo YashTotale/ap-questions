@@ -7,6 +7,7 @@ import Home from "./Pages/Home";
 
 // Components
 import Popup from "./Components/Popup";
+import Navbar from "./Components/Navbar";
 
 //Router Imports
 import { Switch, Route } from "react-router-dom";
@@ -15,6 +16,7 @@ const App: FC = () => {
   return (
     <>
       <Popup />
+      <Navbar />
       <Routes />
     </>
   );
