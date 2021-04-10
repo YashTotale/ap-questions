@@ -1,40 +1,16 @@
 //React Imports
 import React, { FC } from "react";
-import ThemedSelect from "../Components/Reusable/ThemedSelect";
+import ThemedSelect from "../../Components/Reusable/ThemedSelect";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import {
-  changeCourse,
-  getCourses,
-  getCoursesLoading,
-  getSelectedCourse,
-} from "../Redux";
-import { useAppDispatch } from "../Store";
-
-// Firebase Imports
-import { useFirestoreConnect } from "react-redux-firebase";
+import { changeCourse, getCourses, getSelectedCourse } from "../../Redux";
+import { useAppDispatch } from "../../Store";
 
 //Material UI Imports
-import {
-  CircularProgress,
-  makeStyles,
-  Paper,
-  Theme,
-  Typography,
-} from "@material-ui/core";
+import { Paper, makeStyles, Theme, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  loadingSpinner: {
-    marginTop: theme.spacing(2),
-  },
-  home: {
-    display: "flex",
-    justifyContent: "center",
-    width: "80%",
-    margin: "auto",
-    padding: theme.spacing(3),
-  },
   filters: {
     display: "flex",
     flexDirection: "column",
@@ -42,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     width: "100%",
     padding: theme.spacing(2),
+    margin: theme.spacing(0, 0, 3),
   },
   filtersHeading: {
     margin: theme.spacing(1),
@@ -51,47 +28,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Home: FC = () => {
-  useFirestoreConnect({ collection: "courses" });
-
+const Filters: FC = () => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
-  const coursesLoading = useSelector(getCoursesLoading);
-  const courses = useSelector(getCourses);
 
+  const courses = useSelector(getCourses);
   const selectedCourse = useSelector(getSelectedCourse);
 
-  return (
-    <div className={classes.home}>
-      {coursesLoading || !courses ? (
-        <CircularProgress className={classes.loadingSpinner} />
-      ) : (
-        <>
-          <Filters
-            dispatch={dispatch}
-            classes={classes}
-            courses={courses}
-            selectedCourse={selectedCourse}
-          />
-        </>
-      )}
-    </div>
-  );
-};
-
-interface FiltersProps {
-  dispatch: ReturnType<typeof useAppDispatch>;
-  classes: ReturnType<typeof useStyles>;
-  courses: ReturnType<typeof getCourses>;
-  selectedCourse: ReturnType<typeof getSelectedCourse>;
-}
-
-const Filters: FC<FiltersProps> = ({
-  dispatch,
-  classes,
-  courses,
-  selectedCourse,
-}) => {
   return (
     <Paper className={classes.filters} elevation={10}>
       <Typography variant="h5" className={classes.filtersHeading}>
@@ -155,4 +98,4 @@ const Filter: FC<FilterProps> = ({ name, action }) => {
   );
 };
 
-export default Home;
+export default Filters;

@@ -57,11 +57,13 @@ import { homeReducer, HomeState } from "./Redux/home.slice";
 export interface Choice {
   title: string;
   isCorrect: boolean;
+  helperText: string;
 }
 
 export interface Question {
   title: string;
   choices: Choice[];
+  helperText: string;
 }
 
 export interface Course {

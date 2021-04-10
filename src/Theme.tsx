@@ -42,8 +42,8 @@ const Theme: FC = ({ children }) => {
     },
     palette: {
       type: isDarkMode ? "dark" : "light",
-      primary: amber,
-      secondary: lightBlue,
+      primary: lightBlue,
+      secondary: amber,
     },
   });
 
