@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate-react-with-redux",
+  "name": "ap-questions",
   "private": true,
   "scripts": {
     "build": "react-scripts build",

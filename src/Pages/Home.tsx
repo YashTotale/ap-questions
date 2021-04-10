@@ -16,7 +16,7 @@ const Home: FC = () => {
     <div className={classes.home}>
       <Navbar />
       <Typography variant="h1" align="center">
-        Boilerplate React with Redux
+        AP Questions
       </Typography>
       <Typography variant="h6" align="center">
         Edit <code>src/Pages/Home.tsx</code> to view live changes!
