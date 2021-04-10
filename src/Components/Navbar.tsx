@@ -22,13 +22,34 @@ import {
   Menu,
   MenuItem,
   CircularProgress,
+  Typography,
+  useMediaQuery,
 } from "@material-ui/core";
 import { Brightness7, Brightness4, Person } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  toolbar: {},
+  toolbar: {
+    position: "relative",
+  },
+  heading: {
+    margin: "auto",
+  },
+  icons: {
+    position: "absolute",
+    right: "1%",
+  },
   icon: {
+    margin: theme.spacing(0, 0.5),
+    [theme.breakpoints.down("xs")]: {
+      padding: theme.spacing(1),
+      margin: theme.spacing(0, 0),
+    },
+  },
+  iconSVG: {
     fontSize: "1.75rem",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "1.4rem",
+    },
   },
   avatar: {
     cursor: "pointer",
@@ -41,27 +62,42 @@ const Navbar: FC = () => {
   const theme = useTheme();
   const user = useSelector(getUser);
 
+  const isNotSmall = useMediaQuery(theme.breakpoints.up("sm"));
+
   const isDarkMode = theme.palette.type === "dark";
 
   return (
     <AppBar elevation={2} color="transparent" position="static">
       <Toolbar className={classes.toolbar}>
-        <Tooltip title={`Toggle ${isDarkMode ? "Light" : "Dark"} Theme`}>
-          <IconButton
-            onClick={() => {
-              dispatch(toggleDarkMode());
-            }}
-          >
-            {isDarkMode ? <Brightness7 /> : <Brightness4 />}
-          </IconButton>
-        </Tooltip>
-        {!user.isLoaded ? (
-          <CircularProgress />
-        ) : user.isEmpty ? (
-          <LoginButton dispatch={dispatch} classes={classes} />
-        ) : (
-          <ProfileMenu dispatch={dispatch} user={user} classes={classes} />
-        )}
+        <Typography
+          variant={isNotSmall ? "h4" : "h6"}
+          className={classes.heading}
+        >
+          AP Questions
+        </Typography>
+        <div className={classes.icons}>
+          <Tooltip title={`Toggle ${isDarkMode ? "Light" : "Dark"} Theme`}>
+            <IconButton
+              onClick={() => {
+                dispatch(toggleDarkMode());
+              }}
+              className={classes.icon}
+            >
+              {isDarkMode ? (
+                <Brightness7 className={classes.iconSVG} />
+              ) : (
+                <Brightness4 className={classes.iconSVG} />
+              )}
+            </IconButton>
+          </Tooltip>
+          {!user.isLoaded ? (
+            <CircularProgress />
+          ) : user.isEmpty ? (
+            <LoginButton dispatch={dispatch} classes={classes} />
+          ) : (
+            <ProfileMenu dispatch={dispatch} user={user} classes={classes} />
+          )}
+        </div>
       </Toolbar>
     </AppBar>
   );
@@ -77,8 +113,9 @@ const LoginButton: FC<LoginButtonProps> = ({ dispatch, classes }) => {
     <Tooltip title="Login">
       <IconButton
         onClick={() => dispatch(togglePopup({ open: true, type: "login" }))}
+        className={classes.icon}
       >
-        <Person className={classes.icon} />
+        <Person className={classes.iconSVG} />
       </IconButton>
     </Tooltip>
   );
