@@ -1,5 +1,6 @@
 //React Imports
 import React, { FC } from "react";
+import { Link } from "react-router-dom";
 
 // Redux Imports
 import { useSelector } from "react-redux";
@@ -19,6 +20,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Link as MuiLink,
 } from "@material-ui/core";
 import { Question as QuestionProps } from "../../Store";
 
@@ -46,10 +48,13 @@ const Questions: FC = () => {
 
   const questions = course.questions;
 
-  if (!questions)
+  if (!questions.length)
     return (
       <Typography align="center" color="error">
-        <strong>No questions for &quot;{course.title}&quot; found</strong>
+        <strong>No questions found for &quot;{course.title}&quot;</strong>.{" "}
+        <Link to={{ pathname: "/create" }}>
+          <MuiLink>Create your own!</MuiLink>
+        </Link>
       </Typography>
     );
 
@@ -109,10 +114,8 @@ const Question: FC<QuestionProps> = ({
       setHelperText("Please select an option.");
       setError(true);
     } else if (choice.isCorrect) {
-      setHelperText(choice.helperText);
       setError(false);
     } else {
-      setHelperText(choice.helperText);
       setError(true);
     }
   };

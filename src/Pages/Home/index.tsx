@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "center",
     alignItems: "center",
     width: "80%",
-    margin: "auto",
     padding: theme.spacing(3),
 
     [theme.breakpoints.down("xs")]: {

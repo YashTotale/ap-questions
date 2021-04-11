@@ -1,10 +1,11 @@
 //React Imports
 import React, { FC } from "react";
-import ThemedSelect from "../../Components/Reusable/ThemedSelect";
+import CourseSelector from "../../Components/Reusable/CourseSelector";
+import Item from "../../Components/Reusable/Item";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { changeCourse, getCourses, getSelectedCourse } from "../../Redux";
+import { changeCourse, getSelectedCourse } from "../../Redux";
 import { useAppDispatch } from "../../Store";
 
 //Material UI Imports
@@ -32,7 +33,6 @@ const Filters: FC = () => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
 
-  const courses = useSelector(getCourses);
   const selectedCourse = useSelector(getSelectedCourse);
 
   return (
@@ -40,61 +40,19 @@ const Filters: FC = () => {
       <Typography variant="h5" className={classes.filtersHeading}>
         Filters
       </Typography>
-      <Filter
+      <Item
         name="Course"
         action={
-          <ThemedSelect
-            className={classes.courseSelect}
-            options={courses.map((course) => ({
-              label: course.title,
-              value: course.title,
-            }))}
-            value={
-              selectedCourse
-                ? {
-                    label: selectedCourse,
-                    value: selectedCourse,
-                  }
-                : null
-            }
+          <CourseSelector
             onChange={(option) =>
               dispatch(changeCourse(option ? option.value : null))
             }
-            placeholder="Select a course..."
+            selectedCourse={selectedCourse}
+            className={classes.courseSelect}
           />
         }
       />
     </Paper>
-  );
-};
-
-const useFilterStyles = makeStyles((theme) => ({
-  wrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
-  name: {
-    marginRight: theme.spacing(1),
-  },
-}));
-
-interface FilterProps {
-  name: string;
-  action: JSX.Element;
-}
-
-const Filter: FC<FilterProps> = ({ name, action }) => {
-  const classes = useFilterStyles();
-
-  return (
-    <div className={classes.wrapper}>
-      <Typography className={classes.name}>
-        <strong>{name}</strong>:
-      </Typography>
-      {action}
-    </div>
   );
 };
 
