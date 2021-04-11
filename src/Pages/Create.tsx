@@ -181,6 +181,7 @@ const Create: FC = () => {
                 author: user.uid,
                 helperText: questionHelpText,
                 timestamp: Date.now(),
+                likes: 0,
                 choices: choices.map((choice, i) => ({
                   title: choice,
                   isCorrect: i.toString() === correctChoice,

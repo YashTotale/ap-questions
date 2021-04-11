@@ -4,7 +4,21 @@ import { Link } from "react-router-dom";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { getCourses, getSelectedCourse, getUsers } from "../../Redux";
+import {
+  getCourses,
+  getSelectedCourse,
+  getUser,
+  getUsers,
+  togglePopup,
+} from "../../Redux";
+import {
+  Course,
+  Question as QuestionSchema,
+  useAppDispatch,
+} from "../../Store";
+
+// Firebase Imports
+import { TypeWithId, useFirestore } from "react-redux-firebase";
 
 //Material UI Imports
 import {
@@ -21,8 +35,10 @@ import {
   useMediaQuery,
   useTheme,
   Link as MuiLink,
+  Tooltip,
+  IconButton,
 } from "@material-ui/core";
-import { Question as QuestionProps } from "../../Store";
+import { Favorite, FavoriteBorder } from "@material-ui/icons";
 
 const Questions: FC = () => {
   const courses = useSelector(getCourses);
@@ -60,8 +76,8 @@ const Questions: FC = () => {
 
   return (
     <>
-      {questions.map((q) => (
-        <Question key={q.title} {...q} />
+      {questions.map((q, i) => (
+        <Question key={i} {...q} course={course} index={i} />
       ))}
     </>
   );
@@ -73,12 +89,21 @@ const useQuestionStyles = makeStyles((theme) => ({
     flexDirection: "column",
     padding: theme.spacing(3, 3, 1),
     width: "80%",
+    margin: theme.spacing(2, 0),
   },
   formControl: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+  },
+  labelWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    position: "relative",
+    padding: theme.spacing(0, 1),
   },
   label: {
     fontSize: theme.typography.h5.fontSize,
@@ -89,10 +114,19 @@ const useQuestionStyles = makeStyles((theme) => ({
       fontSize: theme.typography.h6.fontSize,
     },
   },
+  likeButton: {
+    position: "absolute",
+    right: "0%",
+  },
   button: {
     margin: theme.spacing(1, 0, 2),
   },
 }));
+
+interface QuestionProps extends QuestionSchema {
+  course: TypeWithId<Course>;
+  index: number;
+}
 
 const Question: FC<QuestionProps> = ({
   title,
@@ -100,9 +134,16 @@ const Question: FC<QuestionProps> = ({
   helperText: initialHelperText,
   author,
   timestamp,
+  likes = [],
+  course,
+  index,
 }) => {
   const classes = useQuestionStyles();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
+  const firestore = useFirestore();
+
+  const user = useSelector(getUser);
   const users = useSelector(getUsers);
   const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
@@ -112,6 +153,7 @@ const Question: FC<QuestionProps> = ({
 
   const authorName = users?.[author]?.name;
   const date = new Date(timestamp);
+  const liked = likes.includes(user.uid);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -141,9 +183,57 @@ const Question: FC<QuestionProps> = ({
           error={error}
           className={classes.formControl}
         >
-          <FormLabel component="h5" className={classes.label}>
-            {title}
-          </FormLabel>
+          <div className={classes.labelWrapper}>
+            <FormLabel component="h5" className={classes.label}>
+              {title}
+            </FormLabel>
+            <Tooltip title={likes.length}>
+              <IconButton
+                className={classes.likeButton}
+                size={isSmall ? "small" : "medium"}
+                onClick={() => {
+                  if (user.isEmpty) {
+                    dispatch(togglePopup({ open: true, type: "login" }));
+                    return;
+                  }
+
+                  if (liked) {
+                    const newLikes = [...likes];
+                    newLikes.splice(likes.indexOf(user.uid), 1);
+
+                    const newQuestions = [...course.questions];
+                    newQuestions[index] = {
+                      ...newQuestions[index],
+                      likes: newLikes,
+                    };
+
+                    firestore.update(`courses/${course.id}`, {
+                      questions: newQuestions,
+                    });
+                  } else {
+                    const newLikes = [...likes];
+                    newLikes.push(user.uid);
+
+                    const newQuestions = [...course.questions];
+                    newQuestions[index] = {
+                      ...newQuestions[index],
+                      likes: newLikes,
+                    };
+
+                    firestore.update(`courses/${course.id}`, {
+                      questions: newQuestions,
+                    });
+                  }
+                }}
+              >
+                {liked ? (
+                  <Favorite fontSize={isSmall ? "small" : "large"} />
+                ) : (
+                  <FavoriteBorder fontSize={isSmall ? "small" : "large"} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </div>
           <RadioGroup name="choices" value={value} onChange={handleRadioChange}>
             {choices.map((choice, i) => (
               <FormControlLabel

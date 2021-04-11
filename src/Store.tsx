@@ -68,6 +68,7 @@ export interface Question {
   helperText: string;
   author: string;
   timestamp: number;
+  likes: string[];
 }
 
 export interface Course {

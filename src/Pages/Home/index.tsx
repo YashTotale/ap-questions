@@ -34,14 +34,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   fab: {
-    position: "absolute",
-    bottom: theme.spacing(3),
-    right: theme.spacing(4),
-
-    [theme.breakpoints.down("xs")]: {
-      bottom: theme.spacing(1),
-      right: theme.spacing(1),
-    },
+    margin: 0,
+    top: "auto",
+    right: theme.spacing(2),
+    bottom: theme.spacing(2),
+    left: "auto",
+    position: "fixed",
   },
 }));
 
