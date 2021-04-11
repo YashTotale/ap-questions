@@ -13,12 +13,7 @@ import Navbar from "./Components/Navbar";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import {
-  getCourses,
-  getCoursesLoading,
-  getUsers,
-  getUsersLoading,
-} from "./Redux";
+import { getCourses, getCoursesLoading, getUsersLoading } from "./Redux";
 
 // Firebase Imports
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -58,11 +53,10 @@ const Routes: FC = () => {
   const courses = useSelector(getCourses);
 
   const usersLoading = useSelector(getUsersLoading);
-  const users = useSelector(getUsers);
 
   return (
     <div className={classes.app}>
-      {coursesLoading || !courses || usersLoading || !users ? (
+      {coursesLoading || !courses || usersLoading ? (
         <CircularProgress className={classes.loadingSpinner} />
       ) : (
         <Switch>
