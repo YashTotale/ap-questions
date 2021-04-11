@@ -1,5 +1,5 @@
 import { FirebaseReducer, TypeWithId } from "react-redux-firebase";
-import { Course, RootState } from "../Store";
+import { Course, RootState, Profile } from "../Store";
 
 /**
  * Firebase
@@ -13,6 +13,12 @@ export const getCoursesLoading = (state: RootState): boolean =>
 
 export const getCourses = (state: RootState): TypeWithId<Course>[] =>
   state.firestore.ordered.courses;
+
+export const getUsersLoading = (state: RootState): boolean =>
+  state.firestore.status.requesting.users;
+
+export const getUsers = (state: RootState): Record<string, Profile> =>
+  state.firestore.data.users;
 
 /**
  * Display Slice

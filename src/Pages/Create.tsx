@@ -180,6 +180,7 @@ const Create: FC = () => {
                 title,
                 author: user.uid,
                 helperText: questionHelpText,
+                timestamp: Date.now(),
                 choices: choices.map((choice, i) => ({
                   title: choice,
                   isCorrect: i.toString() === correctChoice,

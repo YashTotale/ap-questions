@@ -11,7 +11,12 @@ import { useSelector } from "react-redux";
 // Firebase Imports
 import firebase from "firebase/app";
 import { StyledFirebaseAuth } from "react-firebaseui";
-import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
+import {
+  ExtendedFirebaseInstance,
+  ExtendedFirestoreInstance,
+  useFirebase,
+  useFirestore,
+} from "react-redux-firebase";
 
 // Material UI Imports
 import {
@@ -40,6 +45,7 @@ const Popup: FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const firebaseInstance = useFirebase();
+  const firestoreInstance = useFirestore();
   const snackbar = useClosableSnackbar();
 
   const user = useSelector(getUser);
@@ -50,6 +56,7 @@ const Popup: FC = () => {
     open,
     dispatch,
     firebaseInstance,
+    firestoreInstance,
     snackbar,
     classes,
   };
@@ -72,6 +79,7 @@ interface PopupProps {
   open: boolean;
   dispatch: AppDispatch;
   firebaseInstance: ExtendedFirebaseInstance;
+  firestoreInstance: ExtendedFirestoreInstance;
   snackbar: ProviderContext;
   classes: ReturnType<typeof useStyles>;
 }
@@ -80,6 +88,7 @@ const LoginPopup: FC<PopupProps> = ({
   open,
   dispatch,
   firebaseInstance,
+  firestoreInstance,
   snackbar,
 }) => (
   <Dialog open={open} onClose={() => dispatch(togglePopup(false))}>
@@ -98,11 +107,17 @@ const LoginPopup: FC<PopupProps> = ({
           callbacks: {
             signInSuccessWithAuthResult(result) {
               const isNew = result.additionalUserInfo.isNewUser;
+
               if (isNew) {
                 const name = result.additionalUserInfo.profile.name;
                 snackbar.enqueueSnackbar(`Welcome to AP Questions, ${name}!`, {
                   variant: "default",
                   autoHideDuration: 6000,
+                });
+
+                firestoreInstance.collection("users").doc(result.user.uid).set({
+                  name: result.additionalUserInfo.profile.name,
+                  picture: result.additionalUserInfo.profile.picture,
                 });
               }
               return true;

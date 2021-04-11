@@ -1,5 +1,6 @@
 // React Imports
 import React, { FC, useState } from "react";
+import { useHistory } from "react-router";
 
 // Redux Imports
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +26,13 @@ import {
   Typography,
   useMediaQuery,
 } from "@material-ui/core";
-import { Brightness7, Brightness4, Person } from "@material-ui/icons";
+import {
+  Brightness7,
+  Brightness4,
+  Person,
+  Home,
+  Add,
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -33,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     margin: "auto",
+  },
+  pageIcons: {
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    left: "1%",
   },
   icons: {
     display: "flex",
@@ -55,12 +68,18 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     cursor: "pointer",
+    marginLeft: theme.spacing(0.5),
+    [theme.breakpoints.down("xs")]: {
+      width: "30px",
+      height: "30px",
+    },
   },
 }));
 
 const Navbar: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const theme = useTheme();
   const user = useSelector(getUser);
 
@@ -71,6 +90,24 @@ const Navbar: FC = () => {
   return (
     <AppBar elevation={2} color="transparent" position="static">
       <Toolbar className={classes.toolbar}>
+        <div className={classes.pageIcons}>
+          <Tooltip title="Home">
+            <IconButton
+              className={classes.icon}
+              onClick={() => history.push("/")}
+            >
+              <Home className={classes.iconSVG} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Create">
+            <IconButton
+              className={classes.icon}
+              onClick={() => history.push("/create")}
+            >
+              <Add className={classes.iconSVG} />
+            </IconButton>
+          </Tooltip>
+        </div>
         <Typography
           variant={isNotSmall ? "h4" : "h6"}
           className={classes.heading}

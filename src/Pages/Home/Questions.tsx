@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { getCourses, getSelectedCourse } from "../../Redux";
+import { getCourses, getSelectedCourse, getUsers } from "../../Redux";
 
 //Material UI Imports
 import {
@@ -71,19 +71,26 @@ const useQuestionStyles = makeStyles((theme) => ({
   question: {
     display: "flex",
     flexDirection: "column",
-    padding: theme.spacing(3),
+    padding: theme.spacing(3, 3, 1),
     width: "80%",
+  },
+  formControl: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: theme.typography.h5.fontSize,
-    marginBottom: theme.spacing(1),
-
+    margin: theme.spacing(1, 0),
+    color: `${theme.palette.text.primary} !important`,
+    textAlign: "center",
     [theme.breakpoints.down("xs")]: {
       fontSize: theme.typography.h6.fontSize,
     },
   },
   button: {
-    margin: theme.spacing(1, 1, 0, 0),
+    margin: theme.spacing(1, 0, 2),
   },
 }));
 
@@ -91,14 +98,20 @@ const Question: FC<QuestionProps> = ({
   title,
   choices,
   helperText: initialHelperText,
+  author,
+  timestamp,
 }) => {
   const classes = useQuestionStyles();
   const theme = useTheme();
+  const users = useSelector(getUsers);
   const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [value, setValue] = React.useState("");
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState(initialHelperText);
+
+  const authorName = users?.[author]?.name;
+  const date = new Date(timestamp);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -123,8 +136,12 @@ const Question: FC<QuestionProps> = ({
   return (
     <Paper elevation={5} className={classes.question}>
       <form onSubmit={handleSubmit}>
-        <FormControl component="fieldset" error={error}>
-          <FormLabel component="legend" className={classes.label}>
+        <FormControl
+          component="fieldset"
+          error={error}
+          className={classes.formControl}
+        >
+          <FormLabel component="h5" className={classes.label}>
             {title}
           </FormLabel>
           <RadioGroup name="choices" value={value} onChange={handleRadioChange}>
@@ -147,6 +164,12 @@ const Question: FC<QuestionProps> = ({
           >
             Check Answer
           </Button>
+          <Typography variant="body2">
+            {authorName && `Question created by ${authorName}. `}Created on
+            {` ${
+              date.getUTCMonth() + 1
+            }/${date.getDate()}/${date.getUTCFullYear()}`}
+          </Typography>
         </FormControl>
       </form>
     </Paper>

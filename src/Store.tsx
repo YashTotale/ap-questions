@@ -52,7 +52,10 @@ import { displayReducer, DisplayState } from "./Redux/display.slice";
 import { popupReducer, PopupState } from "./Redux/popup.slice";
 import { homeReducer, HomeState } from "./Redux/home.slice";
 
-// interface Profile {}
+export interface Profile {
+  name: string;
+  picture: string;
+}
 
 export interface Choice {
   title: string;
@@ -64,6 +67,7 @@ export interface Question {
   choices: Choice[];
   helperText: string;
   author: string;
+  timestamp: number;
 }
 
 export interface Course {
@@ -79,7 +83,7 @@ interface State {
   display: DisplayState;
   popup: PopupState;
   home: HomeState;
-  firebase: FirebaseReducer.Reducer<Record<string, unknown>, StoreSchema>;
+  firebase: FirebaseReducer.Reducer<Profile, StoreSchema>;
   firestore: FirestoreReducer.Reducer;
 }
 
@@ -164,11 +168,8 @@ const ReduxStore: FC = ({ children }) => {
         dispatch={store.dispatch}
         firebase={firebase}
         config={{
-          logErrors: true,
           useFirestoreForProfile: true,
           userProfile: "users",
-          updateProfileOnLogin: true,
-          autoPopulateProfile: true,
         }}
         createFirestoreInstance={createFirestoreInstance}
       >

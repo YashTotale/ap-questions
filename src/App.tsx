@@ -13,7 +13,12 @@ import Navbar from "./Components/Navbar";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { getCourses, getCoursesLoading } from "./Redux";
+import {
+  getCourses,
+  getCoursesLoading,
+  getUsers,
+  getUsersLoading,
+} from "./Redux";
 
 // Firebase Imports
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -35,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 const App: FC = () => {
   useFirestoreConnect({ collection: "courses" });
+  useFirestoreConnect({ collection: "users" });
 
   return (
     <>
@@ -47,12 +53,16 @@ const App: FC = () => {
 
 const Routes: FC = () => {
   const classes = useStyles();
+
   const coursesLoading = useSelector(getCoursesLoading);
   const courses = useSelector(getCourses);
 
+  const usersLoading = useSelector(getUsersLoading);
+  const users = useSelector(getUsers);
+
   return (
     <div className={classes.app}>
-      {coursesLoading || !courses ? (
+      {coursesLoading || !courses || usersLoading || !users ? (
         <CircularProgress className={classes.loadingSpinner} />
       ) : (
         <Switch>
