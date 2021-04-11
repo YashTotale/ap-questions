@@ -69,8 +69,10 @@ export {
   default as homeSlice,
   // -> Selectors
   getSelectedCourse,
+  getOrderBy,
   // -> Actions
   changeCourse,
+  changeOrderBy,
   // -> Reducer
   homeReducer,
   // -> State

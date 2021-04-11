@@ -1,15 +1,18 @@
 //React Imports
 import React, { FC } from "react";
+import { splitCamelCase } from "../../Utils/funcs";
 import CourseSelector from "../../Components/Reusable/CourseSelector";
 import Item from "../../Components/Reusable/Item";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { changeCourse, getSelectedCourse } from "../../Redux";
+import { changeCourse, getSelectedCourse, getOrderBy } from "../../Redux";
+import { changeOrderBy, HomeState, orders } from "../../Redux/home.slice";
 import { useAppDispatch } from "../../Store";
 
 //Material UI Imports
 import { Paper, makeStyles, Theme, Typography } from "@material-ui/core";
+import ThemedSelect from "../../Components/Reusable/ThemedSelect";
 
 const useStyles = makeStyles((theme: Theme) => ({
   filters: {
@@ -24,7 +27,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   filtersHeading: {
     margin: theme.spacing(1),
   },
-  courseSelect: {
+  item: {
+    margin: theme.spacing(1, 0),
+  },
+  select: {
     width: "70%",
   },
 }));
@@ -34,6 +40,7 @@ const Filters: FC = () => {
   const classes = useStyles();
 
   const selectedCourse = useSelector(getSelectedCourse);
+  const orderBy = useSelector(getOrderBy);
 
   return (
     <Paper className={classes.filters} elevation={10}>
@@ -48,9 +55,34 @@ const Filters: FC = () => {
               dispatch(changeCourse(option ? option.value : null))
             }
             selectedCourse={selectedCourse}
-            className={classes.courseSelect}
+            className={classes.select}
           />
         }
+        className={classes.item}
+      />
+      <Item
+        name="Order By"
+        action={
+          <ThemedSelect
+            options={orders.map((order) => ({
+              label: splitCamelCase(order),
+              value: order,
+            }))}
+            value={{
+              label: splitCamelCase(orderBy),
+              value: orderBy,
+            }}
+            className={classes.select}
+            onChange={(option) =>
+              dispatch(
+                changeOrderBy(
+                  option ? (option.value as HomeState["orderBy"]) : "mostRecent"
+                )
+              )
+            }
+          />
+        }
+        className={classes.item}
       />
     </Paper>
   );

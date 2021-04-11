@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   getCourses,
+  getOrderBy,
   getSelectedCourse,
   getUser,
   getUsers,
@@ -43,6 +44,7 @@ import { Favorite, FavoriteBorder } from "@material-ui/icons";
 const Questions: FC = () => {
   const courses = useSelector(getCourses);
   const selectedCourse = useSelector(getSelectedCourse);
+  const orderBy = useSelector(getOrderBy);
 
   if (!selectedCourse)
     return (
@@ -62,9 +64,7 @@ const Questions: FC = () => {
       </Typography>
     );
 
-  const questions = course.questions;
-
-  if (!questions.length)
+  if (!course.questions.length)
     return (
       <Typography align="center" color="error">
         <strong>No questions found for &quot;{course.title}&quot;</strong>.{" "}
@@ -73,6 +73,27 @@ const Questions: FC = () => {
         </Link>
       </Typography>
     );
+
+  let questions = [...course.questions];
+
+  switch (orderBy) {
+    case "mostRecent": {
+      questions = questions.sort((a, b) => b.timestamp - a.timestamp);
+      break;
+    }
+    case "oldest": {
+      questions = questions.sort((a, b) => a.timestamp - b.timestamp);
+      break;
+    }
+    case "mostLikes": {
+      questions = questions.sort((a, b) => b.likes.length - a.likes.length);
+      break;
+    }
+    case "leastLikes": {
+      questions = questions.sort((a, b) => a.likes.length - b.likes.length);
+      break;
+    }
+  }
 
   return (
     <>

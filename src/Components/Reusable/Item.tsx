@@ -19,13 +19,14 @@ const useItemStyles = makeStyles((theme) => ({
 interface ItemProps {
   name: string;
   action: JSX.Element;
+  className?: string;
 }
 
-const Item: FC<ItemProps> = ({ name, action }) => {
+const Item: FC<ItemProps> = ({ name, action, className }) => {
   const classes = useItemStyles();
 
   return (
-    <div className={classes.wrapper}>
+    <div className={`${classes.wrapper} ${className}`}>
       <Typography className={classes.name}>
         <strong>{name}</strong>:
       </Typography>
