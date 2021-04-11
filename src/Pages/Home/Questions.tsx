@@ -98,7 +98,13 @@ const Questions: FC = () => {
   return (
     <>
       {questions.map((q, i) => (
-        <Question key={i} {...q} course={course} index={i} />
+        <Question
+          key={i}
+          {...q}
+          questions={questions}
+          course={course}
+          index={i}
+        />
       ))}
     </>
   );
@@ -146,6 +152,7 @@ const useQuestionStyles = makeStyles((theme) => ({
 
 interface QuestionProps extends QuestionSchema {
   course: TypeWithId<Course>;
+  questions: Course["questions"];
   index: number;
 }
 
@@ -157,6 +164,7 @@ const Question: FC<QuestionProps> = ({
   timestamp,
   likes = [],
   course,
+  questions,
   index,
 }) => {
   const classes = useQuestionStyles();
@@ -220,9 +228,9 @@ const Question: FC<QuestionProps> = ({
 
                   if (liked) {
                     const newLikes = [...likes];
-                    newLikes.splice(likes.indexOf(user.uid), 1);
+                    newLikes.splice(newLikes.indexOf(user.uid), 1);
 
-                    const newQuestions = [...course.questions];
+                    const newQuestions = [...questions];
                     newQuestions[index] = {
                       ...newQuestions[index],
                       likes: newLikes,
@@ -235,7 +243,7 @@ const Question: FC<QuestionProps> = ({
                     const newLikes = [...likes];
                     newLikes.push(user.uid);
 
-                    const newQuestions = [...course.questions];
+                    const newQuestions = [...questions];
                     newQuestions[index] = {
                       ...newQuestions[index],
                       likes: newLikes,
