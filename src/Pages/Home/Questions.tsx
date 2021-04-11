@@ -38,6 +38,7 @@ import {
   Link as MuiLink,
   Tooltip,
   IconButton,
+  Theme,
 } from "@material-ui/core";
 import { Favorite, FavoriteBorder } from "@material-ui/icons";
 
@@ -110,7 +111,12 @@ const Questions: FC = () => {
   );
 };
 
-const useQuestionStyles = makeStyles((theme) => ({
+interface StyleProps {
+  error: boolean;
+  success: boolean;
+}
+
+const useQuestionStyles = makeStyles<Theme, StyleProps>((theme) => ({
   question: {
     display: "flex",
     flexDirection: "column",
@@ -145,7 +151,23 @@ const useQuestionStyles = makeStyles((theme) => ({
     position: "absolute",
     right: "0%",
   },
+  choice: {
+    color: ({ error, success }) =>
+      error ? "red" : success ? "green" : undefined,
+  },
   button: {
+    color: ({ error, success }) =>
+      error ? "red" : success ? "green" : undefined,
+    borderColor: ({ error, success }) =>
+      error ? "red" : success ? "green" : undefined,
+
+    "&:hover": {
+      color: ({ error, success }) =>
+        error ? "red" : success ? "green" : undefined,
+      borderColor: ({ error, success }) =>
+        error ? "red" : success ? "green" : undefined,
+    },
+
     margin: theme.spacing(1, 0, 2),
   },
 }));
@@ -167,7 +189,14 @@ const Question: FC<QuestionProps> = ({
   questions,
   index,
 }) => {
-  const classes = useQuestionStyles();
+  const [error, setError] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+
+  const classes = useQuestionStyles({
+    error,
+    success,
+  });
+
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const firestore = useFirestore();
@@ -177,7 +206,6 @@ const Question: FC<QuestionProps> = ({
   const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [value, setValue] = React.useState("");
-  const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState(initialHelperText);
 
   const authorName = users?.[author]?.name;
@@ -187,6 +215,7 @@ const Question: FC<QuestionProps> = ({
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     setError(false);
+    setSuccess(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -198,8 +227,10 @@ const Question: FC<QuestionProps> = ({
       setHelperText("Please select an option.");
       setError(true);
     } else if (choice.isCorrect) {
+      setSuccess(true);
       setError(false);
     } else {
+      setSuccess(false);
       setError(true);
     }
   };
@@ -268,7 +299,15 @@ const Question: FC<QuestionProps> = ({
               <FormControlLabel
                 key={i}
                 value={choice.title}
-                label={choice.title}
+                label={
+                  <Typography
+                    className={
+                      value === choice.title ? classes.choice : undefined
+                    }
+                  >
+                    {choice.title}
+                  </Typography>
+                }
                 control={<Radio />}
               />
             ))}
