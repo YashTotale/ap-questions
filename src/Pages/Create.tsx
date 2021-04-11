@@ -1,12 +1,16 @@
 // React Imports
 import React, { FC, useState } from "react";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
+import { useClosableSnackbar } from "../Hooks";
 import CourseSelector from "../Components/Reusable/CourseSelector";
 
 // Redux Imports
 import { useSelector } from "react-redux";
-import { getUser, togglePopup } from "../Redux";
+import { getCourses, getUser, togglePopup, changeCourse } from "../Redux";
 import { useAppDispatch } from "../Store";
+
+// Firebase Imports
+import { useFirestore } from "react-redux-firebase";
 
 // Material UI Imports
 import {
@@ -56,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     margin: theme.spacing(1, 0),
   },
-  titleField: {
+  textField: {
     marginTop: theme.spacing(1),
     width: "100%",
   },
@@ -99,12 +103,18 @@ const useStyles = makeStyles((theme) => ({
 const Create: FC = () => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
-  const user = useSelector(getUser);
   const theme = useTheme();
+  const firestore = useFirestore();
+  const { enqueueSnackbar } = useClosableSnackbar();
+  const history = useHistory();
+
+  const user = useSelector(getUser);
+  const courses = useSelector(getCourses);
 
   const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [title, setTitle] = useState("");
+  const [questionHelpText, setQuestionHelpText] = useState("");
   const [course, setCourse] = useState<string | null>(null);
   const [correctChoice, setCorrectChoice] = useState<string | null>(null);
   const [choices, setChoices] = useState<string[]>([""]);
@@ -155,6 +165,41 @@ const Create: FC = () => {
     if (newHelperText.length) {
       setError(true);
       setHelperText(newHelperText);
+    } else {
+      const courseObj = courses.find((c) => c.title === course);
+
+      if (!courseObj) {
+        setError(true);
+        setHelperText(`Unable to find course "${course}"`);
+      } else {
+        firestore
+          .update(`courses/${courseObj.id}`, {
+            questions: [
+              ...courseObj.questions,
+              {
+                title,
+                author: user.uid,
+                helperText: questionHelpText,
+                choices: choices.map((choice, i) => ({
+                  title: choice,
+                  isCorrect: i.toString() === correctChoice,
+                })),
+              },
+            ],
+          })
+          .then(() => {
+            enqueueSnackbar("Successfully created question!", {
+              variant: "success",
+            });
+            dispatch(changeCourse(courseObj.title));
+            history.push("/");
+          })
+          .catch(() => {
+            enqueueSnackbar("An error occurred. Please try again.", {
+              variant: "error",
+            });
+          });
+      }
     }
   };
 
@@ -176,9 +221,18 @@ const Create: FC = () => {
               size="small"
               label="Title"
               helperText="Ex. What is electroplating?"
-              className={classes.titleField}
+              className={classes.textField}
               value={title}
               onChange={onChange((e) => setTitle(e.target.value))}
+            />
+            <TextField
+              variant="outlined"
+              size="small"
+              label="(Optional) Helper Text"
+              helperText="Ex. Think of Galvanic cells!"
+              className={classes.textField}
+              value={questionHelpText}
+              onChange={(e) => setQuestionHelpText(e.target.value)}
             />
             <CourseSelector
               selectedCourse={course}
