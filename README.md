@@ -1,10 +1,7 @@
 <p align="center"><img width="128" src="https://raw.githubusercontent.com/YashTotale/ap-questions/master/public/logo512.png"></p>
-
 <h1 align="center">AP Questions</h1>
-
 <p align="center">View, filter, create, and like crowd-sourced AP questions!</p>
-
-<p align="center"><strong>1st Place Winner for PantherHack 2021!</strong></p>
+<p align="center"><strong>1st Place Winner at PantherHack 2021!</strong></p>
 
 ## Links
 
