@@ -2,6 +2,10 @@
 <h1 align="center">AP Questions</h1>
 <p align="center">View, filter, create, and like crowd-sourced AP questions!</p>
 <p align="center"><strong>1st Place Winner at PantherHack 2021!</strong></p>
+<p align="center">
+  <a href="https://github.com/YashTotale/ap-questions/actions/workflows/integrate.yml"><img alt="Build" src="https://img.shields.io/github/workflow/status/YashTotale/ap-questions/Node%20CI?logo=github&logoColor=FFFFFF&labelColor=000000&label=Build&style=flat-square"></a>
+  <a href="https://lgtm.com/projects/g/YashTotale/ap-questions/context:javascript"><img alt="Code Quality" src="https://img.shields.io/lgtm/grade/javascript/github/YashTotale/ap-questions?logo=lgtm&logoColor=FFFFFF&labelColor=000000&label=Code%20Quality&style=flat-square"></a>
+</p>
 
 ## Links
 
